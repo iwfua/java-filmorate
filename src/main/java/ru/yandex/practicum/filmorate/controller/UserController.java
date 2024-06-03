@@ -15,57 +15,58 @@ import java.util.Map;
 @RestController
 @RequestMapping(value = "/users")
 public class UserController {
-    private Map<Long, User> users = new HashMap<>();
+    private final Map<Long, User> users = new HashMap<>();
+    private long maxId;
 
     @GetMapping
     public List<User> getUsers() {
-        log.info("Пользователей в списке: {}", users.size());
+        log.info("Отправлен ответ GET /users с телом: {}",users.values());
         return new ArrayList<>(users.values());
     }
 
     @PostMapping
     public User createUser(@Valid @RequestBody User newUser) {
+        log.info("Пришел POST запрос /users с телом: {}", newUser);
         setNameIfAbsent(newUser);
 
         newUser.setId(nextId());
         users.put(newUser.getId(), newUser);
-        log.info("User с id={} добавлен в список", newUser.getId());
+        log.info("Отправлен ответ POST /users с телом: {}", newUser);
         return newUser;
     }
 
     @PutMapping
     public User updateUser(@Valid @RequestBody User user) {
-        if (user.getId() == null) {
-            String errorMessage = "id не указан";
-            log.warn(errorMessage);
-            throw new ValidationException(errorMessage);
-        }
-
-        if (users.containsKey(user.getId())) {
-            setNameIfAbsent(user);
-            users.put(user.getId(), user);
-            log.info("User с id={} обновлен", user.getId());
-            return user;
-        }
-
-        String errorMessage = "User с id=" + user.getId() + "не найден";
-        log.warn(errorMessage);
-        throw new ValidationException(errorMessage);
+        log.info("Пришел PUT запрос /users с телом: {}", user);
+        validate(user);
+        setNameIfAbsent(user);
+        users.put(user.getId(), user);
+        log.info("Отправлен ответ PUT /users с телом: {}", user);
+        return user;
     }
 
-    private static void setNameIfAbsent(User user) {
+    private void setNameIfAbsent(User user) {
         if (user.getName() == null) {
             log.info("В поле name используется login");
             user.setName(user.getLogin());
         }
     }
 
+    private void validate(User user) {
+        if (user.getId() == null) {
+            String errorMessage = "id не указан";
+            log.warn(errorMessage);
+            throw new ValidationException(errorMessage);
+        }
+
+        if (!users.containsKey(user.getId())) {
+            String errorMessage = "User с id=" + user.getId() + " не найден";
+            log.warn(errorMessage);
+            throw new ValidationException(errorMessage);
+        }
+    }
+
     private Long nextId() {
-        long maxId = users.keySet()
-                .stream()
-                .mapToLong(id -> id)
-                .max()
-                .orElse(0);
         return ++maxId;
     }
 }
