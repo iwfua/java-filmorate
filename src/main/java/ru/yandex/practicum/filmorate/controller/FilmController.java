@@ -43,7 +43,13 @@ public class FilmController {
         log.info("Пришел PUT запрос /films с телом: {}", film);
         validateDateRelease(film);
         validateId(film);
+        Long filmId = film.getId();
 
+        if (!films.containsKey(filmId)) {
+            String errorMessage = String.format("Фильм с Id=%s не найден", filmId);
+            log.warn(errorMessage);
+            throw new ValidationException(errorMessage);
+        }
         films.put(film.getId(), film);
         log.info("Отправлен ответ PUT /users с телом: {}", film);
         return film;
