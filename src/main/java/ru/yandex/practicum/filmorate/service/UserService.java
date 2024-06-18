@@ -12,4 +12,10 @@ public interface UserService {
     void deleteFriend(Long userId,Long friendId);
 
     List<User> getMutualFriends(Long userId, Long otherUserId);
+
+    List<User> getAllUsers();
+
+    User createUser(User user);
+
+    User updateUser(User user);
 }

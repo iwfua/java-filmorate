@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
@@ -54,5 +56,45 @@ public class UserServiceImpl implements UserService {
         userFriendIds.retainAll(otherUserFriendIds);
         log.debug("Id общих друзей пользователя id={} и id={}: {}", userId, otherUserId, userFriendIds);
         return userFriendIds.stream().map(userStorage::getUserById).toList();
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        return userStorage.getAllUsers();
+    }
+
+    @Override
+    public User createUser(User user) {
+        setNameIfAbsent(user);
+        return userStorage.createUser(user);
+    }
+
+    @Override
+    public User updateUser(User user) {
+        validate(user);
+        setNameIfAbsent(user);
+        return userStorage.updateUser(user);
+    }
+
+    private void setNameIfAbsent(User user) {
+        if (user.getName() == null) {
+            log.debug("В поле name используется login");
+            user.setName(user.getLogin());
+        }
+    }
+
+    private void validate(User user) {
+        if (user.getId() == null) {
+            String errorMessage = "id не указан";
+            log.warn(errorMessage);
+            throw new ValidationException(errorMessage);
+        }
+
+        if (!userStorage.getUserById(user.getId()).getId().equals(user.getId())) {
+            String errorMessage = "User с id=" + user.getId() + " не найден";
+            User user1 = userStorage.getUserById(user.getId());
+            log.warn(errorMessage);
+            throw new NotFoundException(errorMessage);
+        }
     }
 }

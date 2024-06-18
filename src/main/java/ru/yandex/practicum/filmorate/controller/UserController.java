@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.List;
 
@@ -18,15 +17,13 @@ import java.util.List;
 @RequestMapping(value = "/users")
 public class UserController {
     @Autowired
-    private final UserStorage userStorage;
-    @Autowired
     private final UserService userService;
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<User> getUsers() {
         log.info("Пришел запрос GET /users");
-        List<User> users = userStorage.findUsers();
+        List<User> users = userService.getAllUsers();
         log.info("Отправлен ответ GET /users с телом: {}", users);
         return users;
     }
@@ -35,7 +32,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.CREATED)
     public User createUser(@Valid @RequestBody User newUser) {
         log.info("Пришел POST запрос /users с телом: {}", newUser);
-        userStorage.createUser(newUser);
+        userService.createUser(newUser);
         log.info("Отправлен ответ POST /users с телом: {}", newUser);
         return newUser;
     }
@@ -44,7 +41,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public User updateUser(@Valid @RequestBody User user) {
         log.info("Пришел PUT запрос /users с телом: {}", user);
-        userStorage.updateUser(user);
+        userService.updateUser(user);
         log.info("Отправлен ответ PUT /users с телом: {}", user);
         return user;
     }

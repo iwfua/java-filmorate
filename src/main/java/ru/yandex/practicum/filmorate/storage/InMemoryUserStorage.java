@@ -3,7 +3,6 @@ package ru.yandex.practicum.filmorate.storage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.ArrayList;
@@ -19,8 +18,6 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User createUser(User newUser) {
-        setNameIfAbsent(newUser);
-
         newUser.setId(hasNextId());
         users.put(newUser.getId(), newUser);
         log.debug("Создан пользователь: {}", newUser);
@@ -29,8 +26,6 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User updateUser(User user) {
-        validate(user);
-        setNameIfAbsent(user);
         users.put(user.getId(), user);
         return user;
     }
@@ -44,30 +39,9 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public List<User> findUsers() {
+    public List<User> getAllUsers() {
         log.debug("Получение всех пользователей");
         return new ArrayList<>(users.values());
-    }
-
-    private void setNameIfAbsent(User user) {
-        if (user.getName() == null) {
-            log.debug("В поле name используется login");
-            user.setName(user.getLogin());
-        }
-    }
-
-    private void validate(User user) {
-        if (user.getId() == null) {
-            String errorMessage = "id не указан";
-            log.warn(errorMessage);
-            throw new ValidationException(errorMessage);
-        }
-
-        if (!users.containsKey(user.getId())) {
-            String errorMessage = "User с id=" + user.getId() + " не найден";
-            log.warn(errorMessage);
-            throw new NotFoundException(errorMessage);
-        }
     }
 
     private Long hasNextId() {
