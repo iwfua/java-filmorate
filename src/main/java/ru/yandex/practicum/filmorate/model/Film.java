@@ -1,10 +1,8 @@
 package ru.yandex.practicum.filmorate.model;
 
-import jakarta.validation.ValidationException;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.util.HashSet;
