@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import java.util.List;
 
@@ -17,14 +16,12 @@ import java.util.List;
 @RequestMapping(value = "/films")
 public class FilmController {
     @Autowired
-    private final FilmStorage filmStorage;
-    @Autowired
     private final FilmService filmService;
 
     @GetMapping
     public List<Film> getFilms() {
         log.info("Пришел запрос GET /films");
-        List<Film> films = filmStorage.findFilms();
+        List<Film> films = filmService.getAllFilms();
         log.info("Отправлен ответ GET /films с телом: {}", films);
         return films;
     }
@@ -32,7 +29,7 @@ public class FilmController {
     @PostMapping
     public Film createFilm(@Valid @RequestBody Film newFilm) {
         log.info("Пришел запрос POST /films с телом: {}", newFilm);
-        Film createdFilm = filmStorage.createFilm(newFilm);
+        Film createdFilm = filmService.createFilm(newFilm);
         log.info("Отправлен ответ POST /films: {}", createdFilm);
         return createdFilm;
     }
@@ -40,7 +37,7 @@ public class FilmController {
     @PutMapping
     public Film updateFilm(@Valid @RequestBody Film film) {
         log.info("Пришел запрос PUT /films с телом: {}", film);
-        Film updatedFilm = filmStorage.updateFilm(film);
+        Film updatedFilm = filmService.updateFilm(film);
         log.info("Отправлен ответ PUT /films: {}", updatedFilm);
         return updatedFilm;
     }
