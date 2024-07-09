@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.service.interfaces.UserService;
 
 import java.util.List;
 
@@ -48,14 +48,14 @@ public class UserController {
 
     @PutMapping("/{userId}/friends/{friendId}")
     @ResponseStatus(HttpStatus.OK)
-    public void addFriend(@PathVariable Long userId, @PathVariable Long friendId) {
+    public void addFriend(@PathVariable Integer userId, @PathVariable Integer friendId) {
         log.info("Пришел PUT запрос /users/{}/friends/{}", userId, friendId);
         userService.addFriend(userId, friendId);
         log.info("Отправлен ответ PUT /users/{}/friends/{}", userId, friendId);
     }
 
     @GetMapping("/{userId}/friends")
-    public List<User> getFriends(@PathVariable Long userId) {
+    public List<User> getFriends(@PathVariable Integer userId) {
         log.info("Пришел запрос GET /users/{userId}/friends");
         List<User> userFiends = userService.getFriends(userId);
         log.info("Отправлен ответ GET /users/{userId}/friends с телом: {}", userFiends);
@@ -64,7 +64,7 @@ public class UserController {
 
     @DeleteMapping("/{userId}/friends/{friendId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteFriend(@PathVariable Long userId, @PathVariable Long friendId) {
+    public void deleteFriend(@PathVariable Integer userId, @PathVariable Integer friendId) {
         log.info("Пришел запрос DELETE /users/{}/friends/{}", userId, friendId);
         userService.deleteFriend(userId, friendId);
         log.info("Отправлен ответ DELETE /users/{}/friends/{}", userId, friendId);
@@ -72,7 +72,7 @@ public class UserController {
 
     @GetMapping("/{id}/friends/common/{otherId}")
     @ResponseStatus(HttpStatus.OK)
-    public List<User> getMutualFriends(@PathVariable Long id, @PathVariable Long otherId) {
+    public List<User> getMutualFriends(@PathVariable Integer id, @PathVariable Integer otherId) {
         log.info("Пришел запрос GET /users/{}/friends/common/{}", id, otherId);
         List<User> mutualFriends = userService.getMutualFriends(id, otherId);
         log.info("Отправлен ответ GET /users/{}/friends/common/{} с телом: {}", id, otherId, mutualFriends);
