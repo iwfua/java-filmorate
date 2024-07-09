@@ -35,8 +35,14 @@ class FilmValidationTests {
     @Test
     void createFilmWithTooLongDescription_shouldReturnBadRequest() {
         String description = "Lorem ipsum".repeat(20);
-        Film film = Film.builder().name("Epic Movie").description(description).
-                releaseDate(LocalDate.now().minusYears(3)).duration(160).build();
+        Film film = Film
+                .builder()
+                .name("Epic Movie")
+                .description(description)
+                .releaseDate(LocalDate.now()
+                .minusYears(3))
+                .duration(160)
+                .build();
         ResponseEntity<Film> response = restTemplate.postForEntity("/films", film, Film.class);
 
         assertEquals("400 BAD_REQUEST", response.getStatusCode().toString());
