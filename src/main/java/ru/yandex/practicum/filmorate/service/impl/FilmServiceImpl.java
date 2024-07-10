@@ -33,32 +33,31 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public void addLike(int filmId, int userId) {
         Film film = filmStorage.getFilmById(filmId);
-        if (film != null) {
-            if (userStorage.getUserById(userId) != null) {
-                filmStorage.addLike(filmId, userId);
-                log.info("Лайк успешно добавлен");
-            } else {
-                throw new NotFoundException("Пользователь с ID = " + userId + " не найден");
-            }
-        } else {
+        if (film == null) {
             throw new NotFoundException("Фильм с ID = " + filmId + " не найден");
         }
+
+        if (userStorage.getUserById(userId) == null) {
+            throw new NotFoundException("Пользователь с ID = " + userId + " не найден");
+        }
+        filmStorage.addLike(filmId, userId);
+        log.info("Лайк успешно добавлен");
     }
 
     @Override
     public void deleteLike(int filmId, int userId) {
         Film film = filmStorage.getFilmById(filmId);
-        if (film != null) {
-            if (userStorage.getUserById(userId) != null) {
-                filmStorage.removeLike(filmId, userId);
-                log.info("Лайк успешно удален");
-            } else {
-                throw new NotFoundException("Пользователь с ID = " + userId + " не найден");
-            }
-        } else {
+        if (film == null) {
             throw new NotFoundException("Фильм с ID = " + filmId + " не найден");
         }
+
+        if (userStorage.getUserById(userId) == null) {
+            throw new NotFoundException("Пользователь с ID = " + userId + " не найден");
+        }
+        filmStorage.removeLike(filmId, userId);
+        log.info("Лайк успешно удален");
     }
+
 
     @Override
     public List<Film> getAllFilms() {

@@ -32,9 +32,9 @@ public class UserController {
     @ResponseStatus(HttpStatus.CREATED)
     public User createUser(@Valid @RequestBody User newUser) {
         log.info("Пришел POST запрос /users с телом: {}", newUser);
-        userService.createUser(newUser);
-        log.info("Отправлен ответ POST /users с телом: {}", newUser);
-        return newUser;
+        User user = userService.createUser(newUser);
+        log.info("Отправлен ответ POST /users с телом: {}", user);
+        return user;
     }
 
     @PutMapping

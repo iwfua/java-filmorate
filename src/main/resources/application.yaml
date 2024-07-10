@@ -10,9 +10,14 @@ spring:
     driverClassName: org.h2.Driver
     username: sa
     password: password
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
 
 logging:
   level:
     ru:
       yandex:
         practicum: debug
+
