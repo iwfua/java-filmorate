@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -13,26 +14,16 @@ import java.util.Set;
 @Data
 @Slf4j
 @AllArgsConstructor
+@Builder(toBuilder = true)
 public class User {
-    @PositiveOrZero
-    private Long id;
+    private Integer id;
     @Email
     private String email;
-    @NotNull @NotBlank
+    @NotBlank
     private String login;
     private String name;
     @NotNull @Past(message = "Дата рождения не может быть в будущем")
     private LocalDate birthday;
     @JsonIgnore
-    private final Set<Long> friendsId = new HashSet<>();
-
-    public void addFriend(Long friendId) {
-        log.info("Пользователь с id {} добавлен в друзья", friendId);
-        friendsId.add(friendId);
-    }
-
-    public void deleteFriend(User user) {
-        log.info("Пользователь с id {} удален из друзей", user.getId());
-        friendsId.remove(user.getId());
-    }
+    private final Set<Integer> friendsId = new HashSet<>();
 }

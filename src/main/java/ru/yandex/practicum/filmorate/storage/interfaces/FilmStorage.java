@@ -1,17 +1,17 @@
-package ru.yandex.practicum.filmorate.storage;
+package ru.yandex.practicum.filmorate.storage.interfaces;
 
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.List;
 
-public interface FilmStorage {
+public interface FilmStorage extends LikesStorage {
     Film createFilm(Film newFilm);
 
-    Film deleteFilm(Film film);
+    String deleteFilm(int filmId);
 
     Film updateFilm(Film film);
 
     List<Film> getAllFilms();
 
-    Film getFilmById(Long id);
+    Film getFilmById(int id);
 }
